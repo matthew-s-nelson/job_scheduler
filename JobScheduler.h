@@ -5,9 +5,19 @@
 #ifndef JOB_SCHEDULER_JOBSCHEDULER_H
 #define JOB_SCHEDULER_JOBSCHEDULER_H
 
+#pragma once
+#include "ThreadPool.h"
+#include <chrono>
 
 class JobScheduler {
+public:
+    JobScheduler(size_t numThreads);
+    ~JobScheduler();
 
+    void schedule(std::function<void()> func, int delayMs = 0, int priority = 0);
+
+private:
+    ThreadPool pool_;
 };
 
 
