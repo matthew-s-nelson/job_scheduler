@@ -24,14 +24,14 @@ void ThreadPool::shutdown() {
     stop_ = true;
     cv_.notify_all();
 
-    for (std::thread worker : workers_) {
+    for (std::thread& worker : workers_) {
         if (worker.joinable()) {
             worker.join();
         }
     }
 }
 
-void ThreadPool::~ThreadPool() {
+ThreadPool::~ThreadPool() {
     shutdown();
 }
 

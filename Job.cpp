@@ -3,8 +3,9 @@
 //
 
 #include "Job.h"
+#include <functional>
 
-Job::Job(std:function<void()> func,
+Job::Job(std::function<void()> func,
          Clock::time_point scheduledTime,
          int priority)
          : func_(func), scheduledTime_(scheduledTime), priority_(priority) {

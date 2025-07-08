@@ -21,7 +21,7 @@ public:
     ~ThreadPool();
 
     // Add a job to the thread pool
-    void enqueueJob(std::function<void()> job);
+    void enqueueJob(Job job);
     // Shut down the thread pool and clean up resources
     void shutdown();
 
