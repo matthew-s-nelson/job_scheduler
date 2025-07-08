@@ -13,3 +13,4 @@ A priority based job scheduler that allows for delayed execution of jobs. This j
    - Call the JobScheduler's schedule method to schedule a job passing in a lambda to execute for the job as well as delay (in milliseconds) and a priority (low # = high priority).
 3. In the project's main directory (`job_scheduler`), run `make` to compile the .cpp files into the `job_scheduler` exectuable.
 4. Run `./job_scheduler` to run the project.
+5. Run `make clean` to clean up the compiled files.
