@@ -1,1 +1,15 @@
-# job_scheduler
+# Job Schedule
+## Description
+A priority based job scheduler that allows for delayed execution of jobs. This job scheduler features:
+- a thread pool
+- condition variables
+- a thread-safe priority queue
+- a graceful shutdown
+
+## Use
+1. Clone the repository
+2. Update the main.cpp file according to your needs.
+   - The JobScheduler constructor accepts the number of threads that will be used in the thread pool.
+   - Call the JobScheduler's schedule method to schedule a job passing in a lambda to execute for the job as well as delay (in milliseconds) and a priority (low # = high priority).
+3. In the project's main directory (`job_scheduler`), run `make` to compile the .cpp files into the `job_scheduler` exectuable.
+4. Run `./job_scheduler` to run the project.
