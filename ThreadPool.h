@@ -28,8 +28,12 @@ public:
 private:
     void workerLoop();
 
+    // Compare by priority if they are scheduled for the same time.
     struct JobComparator {
         bool operator()(const Job& a, const Job& b) {
+            if (a.getScheduledTime() == b.getScheduledTime()) {
+                return a.getPriority() > b.getPriority();
+            }
             return a.getScheduledTime() > b.getScheduledTime();
         }
     };
