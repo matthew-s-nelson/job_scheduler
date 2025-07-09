@@ -1,27 +1,33 @@
-# Compiler and flags
 CXX = c++
-CXXFLAGS = -std=c++17 -Wall -Wextra -pthread
+ARCH = -arch arm64
+CXXFLAGS = $(ARCH) -std=c++17 -Wall -Wextra -pthread \
+           -I/opt/homebrew/opt/googletest/include
 
-# Source files
-SRCS = main.cpp Job.cpp ThreadPool.cpp JobScheduler.cpp
-OBJS = $(SRCS:.cpp=.o)
+LDFLAGS = $(ARCH) -L/opt/homebrew/opt/googletest/lib -lgtest -lgtest_main -pthread
 
-# Output binary name
+# App source files
+APP_SRCS = main.cpp Job.cpp ThreadPool.cpp JobScheduler.cpp
+APP_OBJS = $(APP_SRCS:.cpp=.o)
+
+# Test-specific source files (no main.cpp!)
+TEST_SRCS = test_job_scheduler.cpp Job.cpp ThreadPool.cpp JobScheduler.cpp
+TEST_OBJS = $(TEST_SRCS:.cpp=.o)
+
 TARGET = job_scheduler
+TEST_TARGET = test_runner
 
-# Default rule
 all: $(TARGET)
 
-# Link object files into final binary
-$(TARGET): $(OBJS)
+$(TARGET): $(APP_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-# Compile each .cpp file into a .o file
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Clean rule
-clean:
-	rm -f $(OBJS) $(TARGET)
+test: $(TEST_OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TEST_TARGET) $^ $(LDFLAGS)
 
-.PHONY: all clean
+clean:
+	rm -f *.o $(TARGET) $(TEST_TARGET)
+
+.PHONY: all clean test
