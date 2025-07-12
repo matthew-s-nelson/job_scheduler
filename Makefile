@@ -5,12 +5,16 @@ CXXFLAGS = $(ARCH) -std=c++17 -Wall -Wextra -pthread \
 
 LDFLAGS = $(ARCH) -L/opt/homebrew/opt/googletest/lib -lgtest -lgtest_main -pthread
 
+# Define the directories for the source files
+SRC_DIR = src
+TEST_DIR = test
+
 # App source files
-APP_SRCS = main.cpp Job.cpp ThreadPool.cpp JobScheduler.cpp
+APP_SRCS = ${SRC_DIR}/main.cpp ${SRC_DIR}/Job.cpp ${SRC_DIR}/ThreadPool.cpp ${SRC_DIR}/JobScheduler.cpp
 APP_OBJS = $(APP_SRCS:.cpp=.o)
 
 # Test-specific source files (no main.cpp!)
-TEST_SRCS = test_job_scheduler.cpp Job.cpp ThreadPool.cpp JobScheduler.cpp
+TEST_SRCS = ${TEST_DIR}/test_job_scheduler.cpp ${SRC_DIR}/Job.cpp ${SRC_DIR}/ThreadPool.cpp ${SRC_DIR}/JobScheduler.cpp
 TEST_OBJS = $(TEST_SRCS:.cpp=.o)
 
 TARGET = job_scheduler

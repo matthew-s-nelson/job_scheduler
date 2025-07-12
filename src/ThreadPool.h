@@ -14,6 +14,7 @@
 #include <atomic>
 #include <functional>
 #include "Job.h"
+#include <cstdlib>
 
 class ThreadPool {
 public:
