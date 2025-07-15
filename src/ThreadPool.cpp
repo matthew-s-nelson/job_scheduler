@@ -46,7 +46,6 @@ void ThreadPool::workerLoop() {
                 return stop_ || !jobs_.empty();
             });
 
-            // Only stop if all jobs are completed
             if (stop_ && jobs_.empty()) return;
 
             auto now = Job::Clock::now();
@@ -63,5 +62,10 @@ void ThreadPool::workerLoop() {
 
         std::cout << "[Thread " << std::this_thread::get_id() << "] Executing job: " << job.getId() << "\n";
         job.execute();
+
+        if (job.isRepeating()) {
+            job.updateScheduledTimeForRepeat();
+            enqueueJob(job);
+        }
     }
 }

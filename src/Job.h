@@ -18,16 +18,20 @@ public:
 
     Job(std::function<void()> func,
         Clock::time_point scheduledTime,
+        int repeatIntervalMs = 0,
         int priority = 0);
 
     void execute() const;
     std::string getId() const;
     Clock::time_point getScheduledTime() const;
     int getPriority() const;
+    bool isRepeating() const;
+    void updateScheduledTimeForRepeat();
 
 private:
     std::function<void()> func_;
     Clock::time_point scheduledTime_;
+    int repeatIntervalMs_;
     int priority_;
     std::string id_;
 };

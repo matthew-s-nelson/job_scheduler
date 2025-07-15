@@ -7,8 +7,13 @@
 
 Job::Job(std::function<void()> func,
          Clock::time_point scheduledTime,
-         int priority)
-         : func_(func), scheduledTime_(scheduledTime), priority_(priority) {
+         int repeatIntervalMs,
+         int priority
+) : func_(func),
+    scheduledTime_(scheduledTime),
+    repeatIntervalMs_(repeatIntervalMs),
+    priority_(priority)
+{
     uuid_t uuid;
     uuid_generate(uuid);
     char str[37];
@@ -30,4 +35,13 @@ Job::Clock::time_point Job::getScheduledTime() const {
 
 int Job::getPriority() const {
     return priority_;
+}
+
+bool Job::isRepeating() const {
+    return repeatIntervalMs_ > 0;
+}
+
+void Job::updateScheduledTimeForRepeat() {
+    // In the future, I may want to make this just add to the scheduled time.
+    scheduledTime_ = Clock::now() + std::chrono::milliseconds(repeatIntervalMs_);
 }

@@ -10,8 +10,8 @@ JobScheduler::~JobScheduler() {
     pool_.shutdown();
 }
 
-void JobScheduler::schedule(std::function<void()> func, int delayMs, int priority) {
+void JobScheduler::schedule(std::function<void()> func, int delayMs, int repeatIntervalMs, int priority) {
     auto scheduledTime = Job::Clock::now() + std::chrono::milliseconds(delayMs);
-    Job newJob(func, scheduledTime, priority);
+    Job newJob(func, scheduledTime, repeatIntervalMs, priority);
     pool_.enqueueJob(newJob);
 }
