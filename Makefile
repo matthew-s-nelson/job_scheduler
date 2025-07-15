@@ -32,6 +32,6 @@ test: $(TEST_OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TEST_TARGET) $^ $(LDFLAGS)
 
 clean:
-	rm -f *.o $(TARGET) $(TEST_TARGET)
+	rm -f ${TEST_DIR}/*.o ${SRC_DIR}/*.o $(TARGET) $(TEST_TARGET)
 
 .PHONY: all clean test
