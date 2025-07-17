@@ -14,7 +14,7 @@ TEST(JobSchedulerTest, ExecutesJob) {
     JobScheduler jobScheduler(1);
     jobScheduler.schedule([&ran] {
         ran = true;
-    }, 0, 1);
+    }, 0, 0, 0);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     EXPECT_TRUE(ran);
@@ -26,7 +26,7 @@ TEST(JobSchedulerTest, ExecutesAfterDelay) {
     JobScheduler jobScheduler(1);
     jobScheduler.schedule([&ran] {
         ran = true;
-    }, 50, 1);
+    }, 50, 0, 0);
 
     EXPECT_FALSE(ran);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -40,21 +40,52 @@ TEST(JobSchedulerTest, RunsJobsInOrderOfExecuteTime) {
     // Should run 2nd
     jobScheduler.schedule([&executionOrder] {
         executionOrder.push_back(1);
-    }, 100, 1);
+    }, 100, 0, 0);
 
     // Should run 1st
     jobScheduler.schedule([&executionOrder] {
         executionOrder.push_back(2);
-    }, 50, 1);
+    }, 50, 0, 0);
 
     // Should run 3rd
     jobScheduler.schedule([&executionOrder] {
         executionOrder.push_back(3);
-    }, 150, 1);
+    }, 150, 0, 0);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
     std::vector<int> expectedOrer = {2, 1, 3};
     EXPECT_EQ(executionOrder, expectedOrer);
+}
+
+TEST(JobSchedulerTest, CancelsJob) {
+    bool ran = false;
+    JobScheduler jobScheduler(1);
+
+    std::string jobId = jobScheduler.schedule([&ran] {
+        ran = true;
+    }, 100, 0, 0);
+
+    // Cancel the job before it runs
+    jobScheduler.cancelJob(jobId);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    EXPECT_FALSE(ran);
+}
+
+TEST(JobSchedulerTest, RepeatingJob) {
+    std::atomic<int> runCount = 0;
+    JobScheduler jobScheduler(1);
+
+    std::string jobId = jobScheduler.schedule([&runCount] {
+        runCount++;
+    }, 0, 60, 0); // Repeat every 50ms
+
+    jobScheduler.schedule([&jobScheduler, jobId] {
+        jobScheduler.cancelJob(jobId); // Cancel after some time
+    }, 200, 0, 0);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    EXPECT_EQ(runCount.load(), 4); // Should have run at least 3 times
 }
 
 int main(int argc, char** argv) {
