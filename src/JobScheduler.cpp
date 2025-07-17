@@ -10,8 +10,13 @@ JobScheduler::~JobScheduler() {
     pool_.shutdown();
 }
 
-void JobScheduler::schedule(std::function<void()> func, int delayMs, int repeatIntervalMs, int priority) {
+std::string JobScheduler::schedule(std::function<void()> func, int delayMs, int repeatIntervalMs, int priority) {
     auto scheduledTime = Job::Clock::now() + std::chrono::milliseconds(delayMs);
     Job newJob(func, scheduledTime, repeatIntervalMs, priority);
     pool_.enqueueJob(newJob);
+    return newJob.getId();
+}
+
+void JobScheduler::cancelJob(std::string jobId) {
+    pool_.cancelJob(jobId);
 }

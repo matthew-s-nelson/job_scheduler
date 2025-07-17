@@ -20,6 +20,13 @@ void ThreadPool::enqueueJob(Job job) {
     cv_.notify_one();
 }
 
+void ThreadPool::cancelJob(const std::string jobId) {
+    {
+        std::lock_guard<std::mutex> lock(cancelJobsMutex_);
+        canceledJobs_.insert(jobId);
+    }
+}
+
 void ThreadPool::shutdown() {
     stop_ = true;
     cv_.notify_all();
@@ -58,6 +65,13 @@ void ThreadPool::workerLoop() {
 
             job = jobs_.top();
             jobs_.pop();
+        }
+
+        {
+            std::lock_guard<std::mutex> lock(cancelJobsMutex_);
+            if (canceledJobs_.find(job.getId()) != canceledJobs_.end()) {
+                continue; // Skip if the job was canceled
+            }
         }
 
         std::cout << "[Thread " << std::this_thread::get_id() << "] Executing job: " << job.getId() << "\n";

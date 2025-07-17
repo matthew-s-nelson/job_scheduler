@@ -14,7 +14,8 @@ public:
     JobScheduler(size_t numThreads);
     ~JobScheduler();
 
-    void schedule(std::function<void()> func, int delayMs = 0, int repeatIntervalMs = 0, int priority = 0);
+    std::string schedule(std::function<void()> func, int delayMs = 0, int repeatIntervalMs = 0, int priority = 0);
+    void cancelJob(std::string jobId);
 
 private:
     ThreadPool pool_;

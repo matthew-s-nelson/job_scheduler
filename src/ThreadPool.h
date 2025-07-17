@@ -15,6 +15,7 @@
 #include <functional>
 #include "Job.h"
 #include <cstdlib>
+#include <unordered_set>
 
 class ThreadPool {
 public:
@@ -25,6 +26,7 @@ public:
     void enqueueJob(Job job);
     // Shut down the thread pool and clean up resources
     void shutdown();
+    void cancelJob(const std::string jobId);
 
 private:
     void workerLoop();
@@ -40,8 +42,10 @@ private:
     };
 
     std::priority_queue<Job, std::vector<Job>, JobComparator> jobs_;
+    std::unordered_set<std::string> canceledJobs_;
     std::vector<std::thread> workers_;
     std::mutex mutex_;
+    std::mutex cancelJobsMutex_;
     std::condition_variable cv_;
     std::atomic<bool> stop_;
 };
